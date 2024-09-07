@@ -108,7 +108,7 @@ const Profile = () => {
 
           {/* To offset the content below the fixed navbar */}
           <div className="w-full pt-20 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-5xl mt-6">
-            {user ? (
+            {user && (
               <>
                 <div className="mt-4 text-center">
                   {/* <img src={user.image || "https://via.placeholder.com/150"} alt="User Avatar" className="w-24 h-24 rounded-full mx-auto" /> */}
@@ -159,9 +159,11 @@ const Profile = () => {
                   )}
                 </div>
               </>
-            ) : (
-              dispatch(setLoading(true))
-            )}
+            )
+              // : (
+              //   dispatch(setLoading(true))
+              // )
+            }
 
             {isModalOpen && (
               <NoteModal setIsModalOpen={setIsModalOpen} onSave={handleNewJob} />

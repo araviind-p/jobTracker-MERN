@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAccessToken } from '../redux/appSlice';
 
 function Login() {
   const navigate = useNavigate();
@@ -10,12 +12,15 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(()=>{
-    const accessToken= localStorage.getItem("accessToken")
-    if(accessToken){
+  const { accessToken } = useSelector(store => store.appSlice)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken")
+    if (accessToken) {
       navigate('/profile')
     }
-  },[])
+  }, [])
 
   axios.defaults.withCredentials = true;
   // Function to handle form submission
@@ -23,7 +28,7 @@ function Login() {
     event.preventDefault(); // Prevent default form submission
 
     try {
-      const response = await axios.post('https://jobtracker-mern-0i5g.onrender.com/api/auth/login', {
+      const response = await axios.post('http://localhost:3001/api/auth/login', {
         email,
         password
       });
@@ -31,6 +36,7 @@ function Login() {
       // Check if the login was successful
       if (response.data.Login) {
         localStorage.setItem("accessToken", response.data.accessToken)
+        dispatch(setAccessToken(response.data.accessToken))
         navigate('/profile');
 
       }
@@ -46,7 +52,7 @@ function Login() {
     navigate('/register'); // Redirect to register page
   };
 
-  
+
   return (
     <div className='bg-gray-900 min-h-screen flex justify-center items-center pb-14'>
       <form className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md" onSubmit={handleSubmit}>

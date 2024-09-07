@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import {  setJobs, setLoading } from '../redux/appSlice';
 
 const EditJobModal = ({ job, setIsEditing, accessToken }) => {
     const [companyName, setCompanyName] = useState(job.companyName);
@@ -9,6 +10,9 @@ const EditJobModal = ({ job, setIsEditing, accessToken }) => {
     const [url, setUrl] = useState(job.url);
     const [notes, setNotes] = useState(job.notes);
     const [jobStatus, setJobStatus] = useState(job.jobStatus);
+
+    const dispatch = useDispatch()
+    const { loading } = useSelector(store => store.appSlice)
 
     const handleUpdateJob = async () => {
         const updatedJob = {
@@ -19,23 +23,25 @@ const EditJobModal = ({ job, setIsEditing, accessToken }) => {
             jobStatus,
         };
 
+
         try {
-            const response = await axios.put(`https://jobtracker-mern-0i5g.onrender.com/api/v1/updateJob/${job._id}`, updatedJob,
+            dispatch(setLoading(true))
+            const response = await axios.put(`http://localhost:3001/api/v1/updateJob/${job._id}`, updatedJob,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                     },
                 }
             );
-            console.log(response.data);
+            console.log("updated", response.data.updatedJobs);
+            dispatch(setJobs(response.data.updatedJobs))
             toast.success("Updated job details");
-            setTimeout(() => {
-                setIsEditing(false); // Close the modal after saving
-                window.location.reload();
-            }, 500);
         } catch (error) {
             console.error('Failed to update job:', error);
             toast.error('Failed to update job');
+        } finally {
+            setIsEditing(false)
+            dispatch(setLoading(false))
         }
     };
 
@@ -105,7 +111,7 @@ const EditJobModal = ({ job, setIsEditing, accessToken }) => {
                     </button>
                 </div>
             </div>
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </div>
     );
 };

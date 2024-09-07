@@ -26,7 +26,7 @@ export const addJobs = async (req, res) => {
     });
 
     await user.save();
-    res.status(201).json({ message: 'Job added successfully' });
+    res.status(201).json({ message: 'Job added successfully', jobs: user.jobs });
   } catch (error) {
     console.error('Error adding job:', error);
     res.status(500).json({ message: 'Server error' });
@@ -42,7 +42,7 @@ export const updateJob = async (req, res) => {
     const email = req.email
 
     // Find the user and update the specific job
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -59,7 +59,10 @@ export const updateJob = async (req, res) => {
     job.jobStatus = jobStatus;
 
     await user.save();
-    res.status(200).json({ message: 'Job updated successfully', job });
+
+    const updatedUser = await User.findOne({ email })
+
+    res.status(200).json({ message: 'Job updated successfully', updatedJobs:updatedUser.jobs });
   } catch (error) {
     console.error('Error updating job:', error);
     res.status(500).json({ message: 'Server error' });

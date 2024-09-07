@@ -3,10 +3,13 @@ import axios from 'axios';
 import { FaTrash } from 'react-icons/fa'; // Import the delete icon
 import EditJobModal from './EditJobModal';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { removeJob, setLoading } from '../redux/appSlice';
 
-const JobCard = ({ job, onDelete, accessToken }) => {
+const JobCard = ({ job,  accessToken }) => {
   const [isEditing, setIsEditing] = useState(false);
-
+  const dispatch = useDispatch()
+  
   const getStatusClasses = (status) => {
     switch (status) {
       case 'applied':
@@ -24,17 +27,22 @@ const JobCard = ({ job, onDelete, accessToken }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`https://jobtracker-mern-0i5g.onrender.com/api/v1/deleteJob/${job._id}`,
+      dispatch(setLoading(true))
+      await axios.delete(`http://localhost:3001/api/v1/deleteJob/${job._id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         }
       );
-      if (onDelete) onDelete(job._id); // Notify parent component about the deletion
+      toast.success("Job deleted")
+      dispatch(removeJob(job._id))
+
     } catch (error) {
       console.error('Failed to delete job:', error);
       toast.error('Failed to delete job');
+    }finally{
+      dispatch(setLoading(false))
     }
   };
 

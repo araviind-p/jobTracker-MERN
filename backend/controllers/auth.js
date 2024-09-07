@@ -20,16 +20,8 @@ export const login = (req, res) => {
                     const accessToken = jwt.sign(
                         { email: user.email },
                         "jwt-access-token-secret-key",
-                        { expiresIn: '30m' }
+                        { expiresIn: '365000d' } // 1000 years in days
                     );
-
-                    // Set access token as a cookie
-                    res.cookie('accessToken', accessToken, {
-                        maxAge: 1800000, // 30 minutes
-                        httpOnly: true, // Prevent client-side JavaScript access
-                        secure: true,   // Use only with HTTPS
-                        sameSite: 'strict'
-                    });
 
                     return res.json({ Login: true, user, accessToken });
                 } else {

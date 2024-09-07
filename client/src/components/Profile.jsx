@@ -5,14 +5,19 @@ import NoteModal from './NoteModal';
 import JobCard from './JobCard';  // Import the JobCard component
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { setJobs, setAccessToken } from '../redux/appSlice';
+import Spinner from './Spinner';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
-  const [jobs, setJobs] = useState([]);
+  // const [jobs, setJobs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [sortField, setSortField] = useState('createdAt'); // Default sort field
-  const [accessToken, setAccessToken] = useState();
   const navigate = useNavigate();
+
+  const { jobs, accessToken, loading } = useSelector(store => store.appSlice)
+  const dispatch = useDispatch()
 
   axios.defaults.withCredentials = true;
 
@@ -25,19 +30,19 @@ const Profile = () => {
     const fetchUserData = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        setAccessToken(accessToken)
+        dispatch(setAccessToken(accessToken))
         if (!accessToken) {
           throw new Error("No access token found");
         }
 
-        const response = await axios.get('https://jobtracker-mern-0i5g.onrender.com/api/v1/profile', {
+        const response = await axios.get('http://localhost:3001/api/v1/profile', {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         });
         console.log("In profile page", response);
         setUser(response.data.user);
-        setJobs(response.data.user.jobs || []);
+        dispatch(setJobs(response.data.user.jobs || []));
       } catch (error) {
         console.log('Failed to fetch user data:', error);
         navigate('/'); // Redirect to login if there's an error (e.g., token expired)
@@ -57,11 +62,6 @@ const Profile = () => {
     if (a[sortField] > b[sortField]) return 1;
     return 0;
   });
-
-  const handleDeleteJob = (jobId) => {
-    setJobs((prevJobs) => prevJobs.filter((job) => job._id !== jobId));
-    toast.success("Job deleted");
-  };
 
   const handleLogout = async () => {
     try {
@@ -100,69 +100,74 @@ const Profile = () => {
           </button>
         </div>
       </nav>
+      {loading ? <Spinner /> : (
+        <>
 
-      {/* To offset the content below the fixed navbar */}
-      <div className="w-full pt-20 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-5xl mt-6">
-        {user ? (
-          <>
-            <div className="mt-4 text-center">
-              {/* <img src={user.image || "https://via.placeholder.com/150"} alt="User Avatar" className="w-24 h-24 rounded-full mx-auto" /> */}
-              <h2 className="text-2xl font-semibold mt-2 text-gray-900 dark:text-gray-100">
-                {user.name || "John Doe"}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                {user.email || "johndoe@example.com"}
-              </p>
-            </div>
 
-            <div className="mt-6">
-              {jobs.length > 0 && (
-                <div className='flex justify-center mb-4'>
-                  <h2 className="text-2xl font-semibold text-gray-900 dark:text-green-500">YOUR JOBS</h2>
-                </div>
-              )}
-
-              {/* Sort Dropdown */}
-              {jobs.length > 0 && (
-                <div className="flex justify-end mb-4">
-                  <select
-                    value={sortField}
-                    onChange={(e) => setSortField(e.target.value)}
-                    className="px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md"
-                  >
-                    <option value="companyName">Company Name</option>
-                    <option value="jobRole">Job Role</option>
-                    <option value="jobStatus">Job Status</option>
-                    <option value="notes">Notes</option>
-                    <option value="createdAt">Created At</option>
-                  </select>
-                </div>
-              )}
-
-              {jobs.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-                  {sortedJobs.map((job, index) => (
-                    <JobCard key={index} job={job} onDelete={handleDeleteJob} accessToken={accessToken} />
-                  ))}
-                </div>
-              ) : (
-                <div className='flex justify-center'>
-                  <p className="mt-4 cursor-pointer text-gray-900 dark:text-gray-100 w-2/5 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 bg-blue-600 dark:bg-blue-700 flex justify-center p-4 rounded-md" onClick={() => setIsModalOpen(true)}>
-                    Add some jobs
+          {/* To offset the content below the fixed navbar */}
+          <div className="w-full pt-20 p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg max-w-5xl mt-6">
+            {user ? (
+              <>
+                <div className="mt-4 text-center">
+                  {/* <img src={user.image || "https://via.placeholder.com/150"} alt="User Avatar" className="w-24 h-24 rounded-full mx-auto" /> */}
+                  <h2 className="text-2xl font-semibold mt-2 text-gray-900 dark:text-gray-100">
+                    {user.name || "John Doe"}
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    {user.email || "johndoe@example.com"}
                   </p>
                 </div>
-              )}
-            </div>
-          </>
-        ) : (
-          <p className="mt-4 text-gray-600 dark:text-gray-300">Loading user data...</p>
-        )}
 
-        {isModalOpen && (
-          <NoteModal setIsModalOpen={setIsModalOpen} onSave={handleNewJob} />
-        )}
-      </div>
-      <ToastContainer />
+                <div className="mt-6">
+                  {jobs.length > 0 && (
+                    <div className='flex justify-center mb-4'>
+                      <h2 className="text-2xl font-semibold text-gray-900 dark:text-green-500">YOUR JOBS</h2>
+                    </div>
+                  )}
+
+                  {/* Sort Dropdown */}
+                  {jobs.length > 0 && (
+                    <div className="flex justify-end mb-4">
+                      <select
+                        value={sortField}
+                        onChange={(e) => setSortField(e.target.value)}
+                        className="px-4 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded-md"
+                      >
+                        <option value="companyName">Company Name</option>
+                        <option value="jobRole">Job Role</option>
+                        <option value="jobStatus">Job Status</option>
+                        <option value="notes">Notes</option>
+                        <option value="createdAt">Created At</option>
+                      </select>
+                    </div>
+                  )}
+
+                  {jobs.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+                      {sortedJobs.map((job, index) => (
+                        <JobCard key={index} job={job} accessToken={accessToken} />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className='flex justify-center'>
+                      <p className="mt-4 cursor-pointer text-gray-900 dark:text-gray-100 w-2/5 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 bg-blue-600 dark:bg-blue-700 flex justify-center p-4 rounded-md" onClick={() => setIsModalOpen(true)}>
+                        Add some jobs
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <p className="mt-4 text-gray-600 dark:text-gray-300">Loading user data...</p>
+            )}
+
+            {isModalOpen && (
+              <NoteModal setIsModalOpen={setIsModalOpen} onSave={handleNewJob} />
+            )}
+          </div>
+          <ToastContainer />
+        </>
+      )}
     </div>
   );
 };

@@ -35,7 +35,7 @@ const Profile = () => {
           throw new Error("No access token found");
         }
 
-        const response = await axios.get('http://localhost:3001/api/v1/profile', {
+        const response = await axios.get('https://jobtracker-mern-0i5g.onrender.com/api/v1/profile', {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },

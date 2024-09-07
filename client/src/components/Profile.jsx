@@ -6,7 +6,7 @@ import JobCard from './JobCard';  // Import the JobCard component
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { setJobs, setAccessToken } from '../redux/appSlice';
+import { setJobs, setAccessToken, setLoading } from '../redux/appSlice';
 import Spinner from './Spinner';
 
 const Profile = () => {
@@ -43,8 +43,10 @@ const Profile = () => {
         console.log("In profile page", response);
         setUser(response.data.user);
         dispatch(setJobs(response.data.user.jobs || []));
+        dispatch(setLoading(false))
       } catch (error) {
         console.log('Failed to fetch user data:', error);
+        toast.error(error)
         navigate('/'); // Redirect to login if there's an error (e.g., token expired)
       }
     };
@@ -158,7 +160,7 @@ const Profile = () => {
                 </div>
               </>
             ) : (
-              <p className="mt-4 text-gray-600 dark:text-gray-300">Loading user data...</p>
+              dispatch(setLoading(true))
             )}
 
             {isModalOpen && (

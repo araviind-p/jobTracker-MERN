@@ -4,7 +4,7 @@ import { FaTrash } from 'react-icons/fa'; // Import the delete icon
 import EditJobModal from './EditJobModal';
 import { toast } from 'react-toastify';
 
-const JobCard = ({ job, onDelete,accessToken }) => {
+const JobCard = ({ job, onDelete, accessToken }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const getStatusClasses = (status) => {
@@ -75,7 +75,7 @@ const JobCard = ({ job, onDelete,accessToken }) => {
       </div>
 
       {isEditing && (
-        <EditJobModal job={job} setIsEditing={setIsEditing} />
+        <EditJobModal job={job} setIsEditing={setIsEditing} accessToken={accessToken} />
       )}
     </div>
   );

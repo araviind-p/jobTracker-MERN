@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
   const navigate = useNavigate();
@@ -8,13 +10,20 @@ function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
+  useEffect(()=>{
+    const accessToken= localStorage.getItem("accessToken")
+    if(accessToken){
+      navigate('/profile')
+    }
+  },[])
+
   axios.defaults.withCredentials = true;
   // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
     try {
-      const response = await axios.post('http://127.0.0.1:3001/api/auth/login', {
+      const response = await axios.post('http://localhost:3001/api/auth/login', {
         email,
         password
       });
@@ -37,11 +46,13 @@ function Login() {
     navigate('/register'); // Redirect to register page
   };
 
+  
   return (
     <div className='bg-gray-900 min-h-screen flex justify-center items-center pb-14'>
       <form className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md" onSubmit={handleSubmit}>
         <label className="text-4xl mb-8 font-medium text-gray-900 dark:text-blue-200 flex justify-center">Login</label>
-        {error && <div className="mb-4 text-red-500 text-center">{error}</div>}
+        {/* {error && <div className="mb-4 text-red-500 text-center">{error}</div>} */}
+        {error && toast.error(error)}
         <div className="mb-5">
           <input
             type="email"
@@ -83,6 +94,7 @@ function Login() {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

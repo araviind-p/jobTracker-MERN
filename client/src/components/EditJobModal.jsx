@@ -3,7 +3,7 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const EditJobModal = ({ job, setIsEditing }) => {
+const EditJobModal = ({ job, setIsEditing, accessToken }) => {
     const [companyName, setCompanyName] = useState(job.companyName);
     const [jobRole, setJobRole] = useState(job.jobRole);
     const [url, setUrl] = useState(job.url);
@@ -20,12 +20,19 @@ const EditJobModal = ({ job, setIsEditing }) => {
         };
 
         try {
-            const response = await axios.put(`https://jobhunt-mern.onrender.com/updateJob/${job._id}`, updatedJob, { withCredentials: true });
+            const response = await axios.put(`http://localhost:3001/api/v1/updateJob/${job._id}`, updatedJob,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
             console.log(response.data);
             toast.success("Updated job details");
             setTimeout(() => {
                 setIsEditing(false); // Close the modal after saving
-            }, 1000);
+                window.location.reload();
+            }, 500);
         } catch (error) {
             console.error('Failed to update job:', error);
             toast.error('Failed to update job');

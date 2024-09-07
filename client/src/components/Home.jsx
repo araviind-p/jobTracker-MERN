@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    const accessToken= localStorage.getItem("accessToken")
+    if(accessToken){
+      navigate('/profile')
+    }
+  },[])
 
   const handleLogin = () => {
     navigate('/login'); // Navigate to the Login page
@@ -14,7 +21,7 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Welcome to Home</h1>
+      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Welcome to Job Tracker</h1>
       
       <div className="space-x-4">
         <button

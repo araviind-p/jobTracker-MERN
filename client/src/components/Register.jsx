@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register() {
   const navigate = useNavigate();
@@ -8,6 +10,13 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken")
+    if (accessToken) {
+      navigate('/profile')
+    }
+  }, [])
 
   // Function to handle form submission
   const handleSubmit = async (event) => {
@@ -22,7 +31,10 @@ function Register() {
 
       // Check if the registration was successful
       if (response.data) {
-        navigate('/login'); // Redirect to login page
+        toast.success("Registration success")
+        setTimeout(() => {
+          navigate('/login'); // Redirect to login page
+        }, 1000)
       }
     } catch (err) {
       // Handle errors here
@@ -41,6 +53,7 @@ function Register() {
       <form className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md" onSubmit={handleSubmit}>
         <label className="text-4xl mb-8 font-medium text-gray-900 dark:text-blue-200 flex justify-center">Register</label>
         {error && <div className="mb-4 text-red-500 text-center">{error}</div>}
+        {/* {error && toast.error(error)} */}
         <div className="mb-5">
           <input
             type="text"
@@ -93,6 +106,7 @@ function Register() {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

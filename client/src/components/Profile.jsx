@@ -103,7 +103,7 @@ const Profile = () => {
         </div>
       </nav>
       {loading ?
-        <div className='w-full h-dvh flex justify-center items-center bg-gray-800'>
+        <div className='w-screen h-dvh flex justify-center items-center bg-gray-800'>
           <Spinner />
         </div>
         : (

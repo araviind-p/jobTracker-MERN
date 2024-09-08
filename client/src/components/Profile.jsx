@@ -54,7 +54,7 @@ const Profile = () => {
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, []);
 
 
   // Sort jobs based on the selected field
@@ -106,7 +106,7 @@ const Profile = () => {
       </nav>
       {loading ?
         // <div className='w-screen h-dvh flex justify-center items-center bg-gray-800'>
-          <Spinner />
+        <Spinner />
         // </div>
         : (
           <>

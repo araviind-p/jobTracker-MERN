@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -9,30 +9,27 @@ import { setAccessToken, setLoading } from './redux/appSlice';
 import Spinner from './components/Spinner';
 
 function App() {
-
-
-  const { accessToken, loading } = useSelector(store => store.appSlice)
-  const dispatch = useDispatch()
+  const { accessToken, loading } = useSelector((store) => store.appSlice);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkAccessToken = async () => {
       try {
-        dispatch(setLoading(true));  // Start loading
+        dispatch(setLoading(true)); // Start loading
 
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem('accessToken');
         if (token) {
-          dispatch(setAccessToken(token));  // Set token in Redux state
+          dispatch(setAccessToken(token)); // Set token in Redux state
         } else {
           // No token found, navigate to login or home
-          console.log("No access token found, redirecting to Home");
+          console.log('No access token found, redirecting to Home');
           navigate('/');
         }
       } catch (err) {
-        console.error("Error fetching accessToken:", err);
-        // Optionally handle errors here, e.g., show a toast notification
+        console.error('Error fetching accessToken:', err);
       } finally {
-        dispatch(setLoading(false));  // Stop loading
+        dispatch(setLoading(false)); // Stop loading
       }
     };
 
@@ -40,20 +37,16 @@ function App() {
   }, [dispatch, navigate]);
 
   if (loading) {
-    // Show loading spinner while checking accessToken
-    return (
-      <Spinner />
-    );
+    return <Spinner />;
   }
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={!accessToken ? <Home /> : <Profile />} />
-        <Route path='/register' element={accessToken ? <Profile /> : <Register />} />
-        <Route path='/login' element={accessToken ? <Profile /> : <Login />} />
-        <Route path='/profile' element={accessToken ? <Profile /> : <Home />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={!accessToken ? <Home /> : <Profile />} />
+      <Route path="/register" element={accessToken ? <Profile /> : <Register />} />
+      <Route path="/login" element={accessToken ? <Profile /> : <Login />} />
+      <Route path="/profile" element={accessToken ? <Profile /> : <Home />} />
+    </Routes>
   );
 }
 

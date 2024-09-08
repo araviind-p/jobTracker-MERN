@@ -12,15 +12,15 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: ["https://jobtracker-mern-1-hyok.onrender.com"],
+    origin: ["http://localhost:5173"],
     credentials: true
 }))
 
 app.use('/api/auth', authRoutes)
 app.use('/api/v1', userRoutes)
 
-app.listen(3001, () => {
-    console.log("Server is Running on https://jobtracker-mern-0i5g.onrender.com")
+app.listen(5000, () => {
+    console.log("Server is Running on http://localhost:5000")
     mongoose.connect(process.env.MONGODB_URL).then(() => {
         console.log("Database connected✅");
     }).catch((err) => {

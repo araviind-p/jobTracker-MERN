@@ -26,7 +26,7 @@ const EditJobModal = ({ job, setIsEditing, accessToken }) => {
 
         try {
             dispatch(setLoading(true))
-            const response = await axios.put(`https://jobtracker-mern-0i5g.onrender.com/api/v1/updateJob/${job._id}`, updatedJob,
+            const response = await axios.put(`http://localhost:5000/api/v1/updateJob/${job._id}`, updatedJob,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,

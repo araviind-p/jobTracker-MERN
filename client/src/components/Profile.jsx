@@ -29,6 +29,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        dispatch(setLoading(true))
         const accessToken = localStorage.getItem("accessToken");
         dispatch(setAccessToken(accessToken))
         if (!accessToken) {
@@ -43,11 +44,12 @@ const Profile = () => {
         console.log("In profile page", response);
         setUser(response.data.user);
         dispatch(setJobs(response.data.user.jobs || []));
-        dispatch(setLoading(false))
       } catch (error) {
         console.log('Failed to fetch user data:', error);
         toast.error(error)
         navigate('/'); // Redirect to login if there's an error (e.g., token expired)
+      } finally {
+        dispatch(setLoading(false))
       }
     };
 
@@ -103,9 +105,9 @@ const Profile = () => {
         </div>
       </nav>
       {loading ?
-        <div className='w-screen h-dvh flex justify-center items-center bg-gray-800'>
+        // <div className='w-screen h-dvh flex justify-center items-center bg-gray-800'>
           <Spinner />
-        </div>
+        // </div>
         : (
           <>
 

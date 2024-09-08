@@ -23,7 +23,7 @@ function App() {
     } finally {
       dispatch(setLoading(false))
     }
-  }, [dispatch])
+  }, [])
   if (loading) {
     // Show loading spinner while checking accessToken
     return (

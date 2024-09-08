@@ -24,7 +24,7 @@ function App() {
         } else {
           // No token found, navigate to login or home
           console.log('No access token found, redirecting to Home');
-          navigate('/');
+          navigate('/login');
         }
       } catch (err) {
         console.error('Error fetching accessToken:', err);

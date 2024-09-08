@@ -28,7 +28,7 @@ function Login() {
     event.preventDefault(); // Prevent default form submission
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', {
+      const response = await axios.post('https://jobtracker-mern-0i5g.onrender.com/api/auth/login', {
         email,
         password
       });

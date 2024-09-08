@@ -28,7 +28,7 @@ const JobCard = ({ job,  accessToken }) => {
   const handleDelete = async () => {
     try {
       dispatch(setLoading(true))
-      await axios.delete(`http://localhost:5000/api/v1/deleteJob/${job._id}`,
+      await axios.delete(`https://jobtracker-mern-0i5g.onrender.com/api/v1/deleteJob/${job._id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

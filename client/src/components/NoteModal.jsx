@@ -35,7 +35,7 @@ const NoteModal = ({ setIsModalOpen }) => {
       jobStatus,
     };
     try {
-      const response = await axios.post('http://localhost:5000/api/v1/addJobs', noteData,
+      const response = await axios.post('https://jobtracker-mern-0i5g.onrender.com/api/v1/addJobs', noteData,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
